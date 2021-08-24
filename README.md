@@ -1,5 +1,15 @@
 # reversi
 
+*This repository contains a fork of [Oliver Zhang](https://github.com/oliverzh2000)'s [C# and WPF-based Reversi](https://github.com/oliverzh2000/reversi).
+The fork will be used as a test bed environment for the undergraduate course in
+AI Programming at Jönköping University, in the fall semester of 2021. I'd like 
+to express my gratitude to Mr Zhang for making his source code available under 
+the GPL license, allowing such reuse. Any further comments in this file are 
+the original contributions of Mr Zhang.*
+
+*Jönköping, 2021-08-24
+<br />Karl Hammar*
+
 My goal for this app was to make something simple and beautiful, 
 yet featuring a highly competent AI capable of defeating most human players. 
 

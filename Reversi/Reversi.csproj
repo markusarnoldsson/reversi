@@ -36,6 +36,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FSharp.Core, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FSharp.Core.5.0.2\lib\netstandard2.0\FSharp.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -100,6 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\ai.png" />
@@ -121,6 +125,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\delete_black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FSAI\FSAI.fsproj">
+      <Project>{ecd1c583-1da3-4d70-9334-26fa842d6210}</Project>
+      <Name>FSAI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

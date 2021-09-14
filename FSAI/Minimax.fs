@@ -9,6 +9,27 @@ module Minimax =
     let MakeMove childState move tile = 0
     let OtherTile tile = 0
 
+
+    let applyGetWinner getWinner (inputValue:byte[,]) = // En enda input
+        let result:byte = getWinner inputValue
+        result
+
+    let applyEvaluation evaluation (inputValue:byte[,]) = // En enda input
+        let result:int = evaluation inputValue
+        result
+
+    let applyOtherTile otherTile (inputValue:byte) = // En enda input
+        let result:byte = otherTile inputValue
+        result
+
+    let applyGetValidMoves getValidMoves (firstValue:byte[,]) (secondValue:byte) = // Två inputs
+        let result:(int*int)list = getValidMoves firstValue secondValue
+        result
+
+    let applyMakeMove makeMove (firstValue:byte[,]) (secondValue:(int*int)) (thirdValue:byte) = // Tre inputs
+        () |> ignore
+
+
     let rec moveAnalysis state (validMoves: (int*int)list) tile depth a b isMaxPlayer (bestScore) =
         if depth = 0 then bestScore
         else 
@@ -53,7 +74,6 @@ module Minimax =
             let validMoves = getValidMoves state tile
             if validMoves <> [] then
                 moveAnalysis state validMoves tile depth a b isMaxPlayer bestScore
-                0
             else MiniMaxAlphaBeta state depth a b tile isMaxPlayer
 
     type Class1() = 

@@ -9,30 +9,39 @@ module Minimax =
     let MakeMove childState move tile = 0
     let OtherTile tile = 0
 
-    let rec moveAnalysis validMoves childBoard tile depth a b isMaxPlayer bestScore nodeScore =
-        MakeMove childBoard i tile |> ignore
-        if isMaxPlayer = true then
-            let bestScore =
-                if bestScore < nodeScore then
-                    nodeScore
+    let rec moveAnalysis state (validMoves: (int*int)list) tile depth a b isMaxPlayer (bestScore) =
+        if depth = 0 then bestScore
+        else 
+            if b <= a then bestScore
+            else
+                let childBoard = state
+                let nodeScore = moveAnalysis childBoard validMoves (OtherTile(tile)) (depth-1) a b (not isMaxPlayer) bestScore
+
+                MakeMove childBoard validMoves.Head tile |> ignore
+                if isMaxPlayer = true then
+                    let bestScore =
+                        if bestScore < nodeScore then
+                            nodeScore
+                        else
+                            bestScore
+                    let a =
+                        if bestScore < a then
+                            a
+                        else bestScore
+                    ()
                 else
-                    bestScore
-            let a =
-                if bestScore < a then
-                    a
-                else bestScore
-            ()
-        else
-            let bestScore =
-                if bestScore < nodeScore then
-                    nodeScore
-                else
-                    bestScore
-            let b =
-                if bestScore < b then
-                    b
-                else bestScore
-            ()
+                    let bestScore =
+                        if bestScore < nodeScore then
+                            nodeScore
+                        else
+                            bestScore
+                    let b =
+                        if bestScore < b then
+                            b
+                        else bestScore
+                    ()
+                moveAnalysis childBoard validMoves.Tail (OtherTile(tile)) depth a b (not isMaxPlayer) bestScore
+             
 
     let rec MiniMaxAlphaBeta state depth a b tile isMaxPlayer  =
         
@@ -43,9 +52,7 @@ module Minimax =
             let bestScore = 0
             let validMoves = getValidMoves state tile
             if validMoves <> [] then
-                let childBoard = state
-                let nodeScore = MiniMaxAlphaBeta childBoard (depth - 1) a b (OtherTile(tile)) (not isMaxPlayer)
-                moveAnalysis validMoves childBoard tile depth a b isMaxPlayer bestScore nodeScore
+                moveAnalysis state validMoves tile depth a b isMaxPlayer bestScore
                 0
             else MiniMaxAlphaBeta state depth a b tile isMaxPlayer
 

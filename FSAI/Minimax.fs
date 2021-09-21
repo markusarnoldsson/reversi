@@ -52,6 +52,47 @@ module Minimax =
     let GetScore (board: byte[,]) (tile: byte) =
         Seq.length((Seq.filter(fun cell -> cell = tile) (Seq.cast board)))
 
+    // Denna funktion följer en riktning och tittar ifall den är giltig, isf returnerar den true
+    let rec checkValidDirection (board: byte[,]) (x: int) (y: int) (direction: (int*int)) (tile: byte) =
+        if IsOnBoard x y then
+            //Ifall den motsatta biten finns på denna plats -> fortsätt i den riktningen rekursivt
+            if board.[x,y] = OtherTile tile then
+                let directionX, directionY = direction
+                checkValidDirection board (x+directionX) (y+directionY) direction tile
+            elif board.[x,y] = tile then
+                true
+            else
+                false
+        else
+            false
+
+    // Denna funktion tittar alla riktningar och returnerar true ifall det befinner sig en giltig riktning
+    let rec checkDirections (board: byte[,]) (x: int) (y: int) (direction: (int*int)list) (tile: byte) =
+        match direction with
+        //Ifall direction är tom -> finns inga giltiga riktningar -> returnerna false
+        | [] -> false
+        //Annars -> ta ut head(första riktningen i listan) och skicka till checkValidDirections
+        | head::tail ->
+            let directionX, directionY = head
+            if checkValidDirection board (x+directionX) (y+directionY) head tile then
+                true
+            else
+                checkDirections board x y tail tile
+
+    // Funktionen tittar ifall ett drag är giltigt genom rekursivt gå igenom alla möjliga drag tills den hittar en tom ruta som också vänder bitar
+    let ValidMove (board:byte[,]) (x: int) (y:int) (tile: byte) =
+        if board.[x,y] = empty then
+            checkDirections board x y moveableDirections tile
+        else
+            false
+
+    // Funktionen hämtar alla giltiga drag genom att kontrollera alla validMoves med board
+    let GetValidMoves (board: byte[,]) (tile: byte) =
+        let validMoves = [
+            for x in 0..7 do
+               for y in 0..7 do if (ValidMove board x y tile) then yield (x,y)]
+        validMoves
+
     // Minimax-algorithm med alpha-beta klippning
     let rec MiniMaxAlphaBeta state depth a b tile isMaxPlayer =
 

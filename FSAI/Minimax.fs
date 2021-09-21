@@ -2,14 +2,14 @@
 
 module Minimax =
     
-    //values
+    // Values
     let empty   = byte 0
     let white   = byte 1
     let black   = byte 2
     let Valid   = byte 3
     let Tie     = byte 4
 
-    //movableDirections - innehåller en lista av möjligla riktningar för drag
+    // MovableDirections - innehåller en lista av möjligla riktningar för drag
     let moveableDirections =
         [
             (-1,1);
@@ -22,7 +22,7 @@ module Minimax =
             (1,-1);
         ]
 
-    //returnerar den motsatta tile
+    // Returnerar den motsatta tile
     let OtherTile tile =
         if tile = black then
             white
@@ -31,11 +31,11 @@ module Minimax =
         else
             byte 0
 
-    //returnerar true/false ifall den är på boarden
+    // Returnerar true/false ifall den är på boarden
     let IsOnBoard x y =
         0 <= x && x <= 7 && 0 <= y && y <= 7
 
-    //returnerar antal hörn för en specifik tile
+    // Returnerar antal hörn för en specifik tile
     let CountCorners (board: byte[,]) (tile: byte) =
         let mutable corners = 0
 
@@ -93,50 +93,6 @@ module Minimax =
                for y in 0..7 do if (ValidMove board x y tile) then yield (x,y)]
         validMoves
 
-    // Returnerar ett evalueted score för boarden
-    let Evaluation (board: byte[,]) =
-        let mutable evaluation = 0
-        let whiteScore = GetScore board white
-        let blackScore = GetScore board black
-        let whiteMobility = (GetValidMoves board white).Length
-        let blackMobility = (GetValidMoves board black).Length
-
-        if whiteScore = 0 then
-            -200000
-        elif blackScore = 0 then
-            200000
-        else
-            //Ifall att board skulle vara full eller att det inte finns några validMoves, titta vilken tile
-            //som har högst score, returnera sedan ett värde
-            if whiteScore + blackScore = 64 || whiteMobility + blackMobility = 0 then
-                if blackScore < whiteScore then
-                    -100000 - whiteScore + blackScore
-                elif blackScore > whiteScore then
-                    100000 + blackScore - whiteScore
-                else int 0
-            //Ifall inte.. beräkna och skicka tillbaka ett evaluated värde
-            else
-                evaluation <- evaluation + (blackScore - whiteScore)
-                if blackScore + whiteScore > 55 then
-                    blackScore - whiteScore
-                else
-                    evaluation <- evaluation + (blackMobility - whiteMobility) * 10
-                    evaluation <- ((CountCorners board black) - (CountCorners board white)) * 100
-                    evaluation
-
-    // Returnar vinnaren, lika eller 0 beroende på hur spelet ligger till
-    let GetWinner (board: byte[,]) =
-        let whiteScore = GetScore board white
-        let blackScore = GetScore board black
-        //Ifall nån spelare har noll i score, eller att hela boarden är fylld eller att ingen spelare har några valid moves, titta vem som har vunnit eller ifall lika
-        if blackScore = 0 || whiteScore = 0 || blackScore + whiteScore = 64 || (GetValidMoves board white).Length + (GetValidMoves board black).Length = 0 then
-            if blackScore > whiteScore then
-                black
-            elif whiteScore > blackScore then
-                white
-            else Tie
-        else byte 0
-
     // Returnerar en lista med de flippade bitarna
     let GetFlippedPieces (board: byte[,]) (move: (int*int)) (tile: byte) =
         let moveX, moveY = move
@@ -189,6 +145,50 @@ module Minimax =
         else
             childBoard
 
+    // Returnerar ett evalueted score för boarden
+    let Evaluation (board: byte[,]) =
+        let mutable evaluation = 0
+        let whiteScore = GetScore board white
+        let blackScore = GetScore board black
+        let whiteMobility = (GetValidMoves board white).Length
+        let blackMobility = (GetValidMoves board black).Length
+
+        if whiteScore = 0 then
+            -200000
+        elif blackScore = 0 then
+            200000
+        else
+            //Ifall att board skulle vara full eller att det inte finns några validMoves, titta vilken tile
+            //som har högst score, returnera sedan ett värde
+            if whiteScore + blackScore = 64 || whiteMobility + blackMobility = 0 then
+                if blackScore < whiteScore then
+                    -100000 - whiteScore + blackScore
+                elif blackScore > whiteScore then
+                    100000 + blackScore - whiteScore
+                else int 0
+            //Ifall inte.. beräkna och skicka tillbaka ett evaluated värde
+            else
+                evaluation <- evaluation + (blackScore - whiteScore)
+                if blackScore + whiteScore > 55 then
+                    blackScore - whiteScore
+                else
+                    evaluation <- evaluation + (blackMobility - whiteMobility) * 10
+                    evaluation <- ((CountCorners board black) - (CountCorners board white)) * 100
+                    evaluation
+
+    // Returnar vinnaren, lika eller 0 beroende på hur spelet ligger till
+    let GetWinner (board: byte[,]) =
+        let whiteScore = GetScore board white
+        let blackScore = GetScore board black
+        //Ifall nån spelare har noll i score, eller att hela boarden är fylld eller att ingen spelare har några valid moves, titta vem som har vunnit eller ifall lika
+        if blackScore = 0 || whiteScore = 0 || blackScore + whiteScore = 64 || (GetValidMoves board white).Length + (GetValidMoves board black).Length = 0 then
+            if blackScore > whiteScore then
+                black
+            elif whiteScore > blackScore then
+                white
+            else Tie
+        else byte 0
+
     // Minimax-algorithm med alpha-beta klippning
     let rec MiniMaxAlphaBeta state depth a b tile isMaxPlayer =
 
@@ -234,6 +234,6 @@ module Minimax =
             else
                 (moveAnalysis state validMoves tile a b isMaxPlayer bestScore)
 
-type Class1() = 
-    member this.X = "F#"
+    type Class1() = 
+        member this.X = "F#"
     

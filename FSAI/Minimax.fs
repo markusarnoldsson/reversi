@@ -49,6 +49,9 @@ module Minimax =
             corners <- corners + 1
         corners
 
+    let GetScore (board: byte[,]) (tile: byte) =
+        Seq.length((Seq.filter(fun cell -> cell = tile) (Seq.cast board)))
+
     // Minimax-algorithm med alpha-beta klippning
     let rec MiniMaxAlphaBeta state depth a b tile isMaxPlayer =
 

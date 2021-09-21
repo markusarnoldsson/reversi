@@ -2,35 +2,28 @@
 
 module Minimax =
     
-    //Temp functions
-    let eval state = 10000
-    let getWinner state = 0
-    let getValidMoves state tile = [(1,2); (2,2); (3,2)]
-    let MakeMove childState move tile = 0
-    let OtherTile tile = 0
+    //values
+    let empty   = byte 0
+    let white   = byte 1
+    let black   = byte 2
+    let Valid   = byte 3
+    let Tie     = byte 4
 
+    //movableDirections - innehåller en lista av möjligla riktningar för drag
+    let moveableDirections =
+        [
+            (-1,1);
+            (0,1);
+            (1,1);
+            (-1,0);
+            (1,0);
+            (-1,-1);
+            (0,-1);
+            (1,-1);
+        ]
 
-    let applyGetWinner getWinner (inputValue:byte[,]) = // En enda input
-        let result:byte = getWinner inputValue
-        result
-
-    let applyEvaluation evaluation (inputValue:byte[,]) = // En enda input
-        let result:int = evaluation inputValue
-        result
-
-    let applyOtherTile otherTile (inputValue:byte) = // En enda input
-        let result:byte = otherTile inputValue
-        result
-
-    let applyGetValidMoves getValidMoves (firstValue:byte[,]) (secondValue:byte) = // Två inputs
-        let result:(int*int)list = getValidMoves firstValue secondValue
-        result
-
-    let applyMakeMove makeMove (firstValue:byte[,]) (secondValue:(int*int)) (thirdValue:byte) = // Tre inputs
-        () |> ignore
 
     // Minimax-algorithm med alpha-beta klippning
-
     let rec MiniMaxAlphaBeta state depth a b tile isMaxPlayer =
 
         //en rec funktion som sköter alpha-beta klippningen i stället för for-loopen

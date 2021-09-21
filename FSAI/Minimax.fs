@@ -137,6 +137,58 @@ module Minimax =
             else Tie
         else byte 0
 
+    // Returnerar en lista med de flippade bitarna
+    let GetFlippedPieces (board: byte[,]) (move: (int*int)) (tile: byte) =
+        let moveX, moveY = move
+        if board.[moveX, moveY] = empty then 
+            []
+        else
+            //funktionen tittar mot alla riktningar och summerar resultatet
+            let rec GetDirectionFlippedPieces (board: byte[,]) (tile: byte) (x: int) (y: int) (direction: (int*int)list) =
+                if direction = List.Empty then 
+                    []
+                else
+                    let nextX = x + fst direction.Head
+                    let nextY = y + snd direction.Head
+
+                    //ifall man går över en motstående bit, stega vidare
+                    if (IsOnBoard nextX nextY) && (board.[nextX,nextY] = OtherTile tile) then
+ 
+                        // Rekursivt gå igenom riktningen 
+                        let rec getFlippedPieceDirection (board: byte[,]) (tile: byte) (coordinates: (int*int)) (direction: (int*int)) =
+                            let xCoord, yCoord = coordinates
+                            let xDirection, yDirection = direction
+
+                            // ifall vi befinner oss på boarden och på en motsatt bit, returnera listan med denna position
+                            if IsOnBoard xCoord yCoord && board.[xCoord,yCoord] = OtherTile tile then
+                                (xCoord, yCoord)::getFlippedPieceDirection board tile ((xCoord + xDirection),(yCoord + yDirection)) direction
+                            else
+                                []
+                        let flippedPieces = getFlippedPieceDirection board tile (x,y) direction.Head
+
+                        //kombinera flippedPieces listan med (rekursivt) nya listan
+                        flippedPieces @ GetDirectionFlippedPieces board tile x y direction.Tail
+                    else
+                        GetDirectionFlippedPieces board tile x y direction.Tail
+
+            GetDirectionFlippedPieces board tile moveX moveY moveableDirections
+        
+    // Byter den utvalde platsens bit samt de motsvarande bitarna
+    let MakeMove (board: byte[,]) (move: (int*int)) (tile: byte) =
+        let flippedPieces = GetFlippedPieces board move tile
+        let childBoard = Array2D.copy board
+
+        // Ange alla flippedPieces från flippedPieces listan till childBoard
+        for flippedPiece in flippedPieces do
+            childBoard.[fst flippedPiece, snd flippedPiece] <- tile
+
+        // Ifall det finns flipped pieces -> ange tile moved to och returnera childBoard
+        if flippedPieces.Length > 0 then
+            childBoard.[fst move, snd move] <- tile
+            childBoard
+        else
+            childBoard
+
     // Minimax-algorithm med alpha-beta klippning
     let rec MiniMaxAlphaBeta state depth a b tile isMaxPlayer =
 
@@ -146,7 +198,7 @@ module Minimax =
             | [] -> bestScore
             | head::tail ->
 
-                let childState = applyMakeMove state head tile 
+                let childState = MakeMove state head tile 
                 let nodeScore = MiniMaxAlphaBeta childState (depth-1) a b (OtherTile tile) (not isMaxPlayer)
                 if isMaxPlayer then
                     let maxScore = max bestScore nodeScore
@@ -181,6 +233,7 @@ module Minimax =
                 (MiniMaxAlphaBeta state depth a b (OtherTile tile) (not isMaxPlayer))
             else
                 (moveAnalysis state validMoves tile a b isMaxPlayer bestScore)
-    type Class1() = 
-        member this.X = "F#"
+
+type Class1() = 
+    member this.X = "F#"
     

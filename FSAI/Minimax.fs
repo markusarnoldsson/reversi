@@ -195,11 +195,20 @@ module Minimax =
         //en rec funktion som sköter alpha-beta klippningen i stället för for-loopen
         let rec moveAnalysis (state: byte[,]) (validMoves: (int*int)list) (tile: byte) (a: int) (b: int) (isMaxPleyer: bool) (bestScore: int) =
             match validMoves with
+
+            //Ifall att listan är tom, returnera bestScore
             | [] -> bestScore
+
+            //Ifall något i listan finns, påbörja ->
             | head::tail ->
 
+                //Skapa en ny childState när move görs
                 let childState = MakeMove state head tile 
+
+                //Titta nodeScore för nya childState
                 let nodeScore = MiniMaxAlphaBeta childState (depth-1) a b (OtherTile tile) (not isMaxPlayer)
+                
+                //Alpha beta klippning i trädsökningen
                 if isMaxPlayer then
                     let maxScore = max bestScore nodeScore
                     let nextA = max bestScore a
@@ -223,8 +232,8 @@ module Minimax =
         else
             let bestScore = 
                 match isMaxPlayer with
-                | true -> System.Int32.MinValue
-                | false -> System.Int32.MaxValue
+                | true -> -200000
+                | false -> 200000
             let validMoves = GetValidMoves state tile
 
             //titta ifall det finns några möjliga drag, isf fortsätt

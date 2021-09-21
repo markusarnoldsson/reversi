@@ -22,6 +22,32 @@ module Minimax =
             (1,-1);
         ]
 
+    //returnerar den motsatta tile
+    let OtherTile tile =
+        if tile = black then
+            white
+        else if tile = white then
+            black
+        else
+            byte 0
+
+    //returnerar true/false ifall den är på boarden
+    let IsOnBoard x y =
+        0 <= x && x <= 7 && 0 <= y && y <= 7
+
+    //returnerar antal hörn för en specifik tile
+    let CountCorners (board: byte[,]) (tile: byte) =
+        let mutable corners = 0
+
+        if board.[0,0] = tile then
+            corners <- corners + 1
+        if board.[0,7] = tile then
+            corners <- corners + 1
+        if board.[7,0] = tile then
+            corners <- corners + 1
+        if board.[7,7] = tile then
+            corners <- corners + 1
+        corners
 
     // Minimax-algorithm med alpha-beta klippning
     let rec MiniMaxAlphaBeta state depth a b tile isMaxPlayer =
